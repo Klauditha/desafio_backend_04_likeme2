@@ -1,8 +1,45 @@
-# React + Vite
+# Example CRUD React with fetch
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a simple example of a CRUD React application using fetch.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm i
+```
+
+## Usage
+
+this project uses [Vite JS](https://vitejs.dev/), so you can use the following commands:
+
+```bash
+npm run dev
+```
+
+## Configuration
+
+in the file `src\services\postService.js` you can change the API URL
+
+```js
+const URL_API = "http://localhost:3000/posts";
+```
+
+## External libraries
+
+- [react-toastify](https://www.npmjs.com/package/react-toastify)
+
+## Version History
+
+```json
+"dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.1"
+},
+"devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react": "^3.1.0",
+    "vite": "^4.1.0"
+}
+```
