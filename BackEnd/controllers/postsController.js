@@ -1,8 +1,8 @@
 const {
   getAllPostsData,
-  addPost,
-  deletePostById,
-  updatePostLike,
+  addPostData,
+  deletePostData,
+  updatePostData,
 } = require('../data/posts.js');
 
 const getAllPosts = async (req, res) => {
@@ -16,12 +16,12 @@ const getAllPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
   try {
-    const { titulo, url, descripcion, likes } = req.body;
+    const { titulo, url, descripcion } = req.body;
     if (!titulo || !url || !descripcion) {
       res.status(400).send('Todos los campos son obligatorios');
       return;
     }
-    const results = await addPost(titulo, url, descripcion, likes);
+    const results = await addPostData(titulo, url, descripcion);
     res.send(results);
   } catch (error) {
     res.status(500).send(error);
@@ -29,29 +29,52 @@ const createPost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  console.log('entro a deletePost');
+  const { id } = req.params;
+  const { data } = req;
+  const { postExist } = data;
+
   try {
-    const { id } = req.params;
-    if (!id) {
-      res.status(400).send('El id es obligatorio');
+    if (postExist) {
+      const results = await deletePostData(id);
+      res.status(200).json({
+        status:"success",
+        message: "Post eliminado",
+        //post: results
+      })
     }
-    const results = await deletePostById(id);
-    res.send(results);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req, res, next) => {
+  const { id } = req.params;
+  const { data } = req;
+  const { postExist, post } = data;
+
   try {
-    const { id } = req.params;
-    if (!id) {
-      res.status(400).send('El id es obligatorio');
+    if (postExist) {
+      const titulo = req.body.titulo || post.titulo;
+      const img = req.body.url || post.img;
+      const descripcion = req.body.descripcion || post.descripcion;
+      const likes = req.body.likes || post.likes;
+
+      const results = await updatePostData(
+        id,
+        titulo,
+        img,
+        descripcion,
+        likes + 1
+      );
+      //const postUpdated  = results.rows[0];
+      res.status(200).json({
+        status:"success",
+        message: "Post actualizado",
+        //post: postUpdated
+      });
     }
-    const results = await updatePostLike(id);
-    res.send(results);
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 };
 

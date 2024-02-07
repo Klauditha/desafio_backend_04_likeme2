@@ -1,27 +1,29 @@
 const { pool } = require('../config/db');
+const {
+  selectAllQuery,
+  insertPostQuery,
+  deletePostQuery,
+  updatePostQuery,
+} = require('../querys/index.js');
 
 const getAllPostsData = async () => {
-  const { rows } = await pool.query('SELECT * FROM posts');
-  console.log(rows);
+  const { rows } = await pool.query(selectAllQuery);
   return rows;
 };
 
-const addPost = async (titulo, img, descripcion, likes) => {
-  const { rows } = await pool.query(
-    'INSERT INTO posts (titulo,img,descripcion,likes) VALUES ($1,$2,$3,$4) RETURNING *',
-    [titulo, img, descripcion, likes]
-  );
+const addPostData = async (titulo, img, descripcion) => {
+  const { rows } = await pool.query(insertPostQuery, [
+    titulo,
+    img,
+    descripcion,
+    0,
+  ]);
   return rows;
 };
 
-const deletePostById = async (id) => {
+const deletePostData = async (id) => {
   try {
-    const post = await pool.query('SELECT * FROM posts WHERE id = $1', [id]);
-    if (!post) {
-      console.log('No existe el post con el id ' + id);
-      throw new Error('No existe el post con el id ' + id);
-    }
-    await pool.query('DELETE FROM posts WHERE id = $1 ', [id]);
+    await pool.query(deletePostQuery, [id]);
     return 'Post con id ' + id + ' eliminado';
   } catch (error) {
     console.log(error);
@@ -29,21 +31,10 @@ const deletePostById = async (id) => {
   }
 };
 
-const updatePostLike = async (id) => {
+const updatePostData = async (id, titulo, img, descripcion, likes) => {
+  console.log(id, titulo, img, descripcion, likes);
   try {
-    const { rows } = await pool.query('SELECT * FROM posts WHERE id = $1', [
-      id,
-    ]);
-    console.log(rows[0].likes);
-    if (!rows) {
-      console.log('No existe el post con el id ' + id);
-      throw new Error('No existe el post con el id ' + id);
-    }
-
-    await pool.query('UPDATE posts SET likes = $1 WHERE id = $2', [
-      rows[0].likes == null ? 1 : rows[0].likes + 1,
-      id,
-    ]);
+    await pool.query(updatePostQuery, [titulo, img, descripcion, likes, id]);
     return 'Post con id ' + id + ' actualizado';
   } catch (error) {
     console.log(error);
@@ -51,4 +42,9 @@ const updatePostLike = async (id) => {
   }
 };
 
-module.exports = { getAllPostsData, addPost, deletePostById, updatePostLike };
+module.exports = {
+  getAllPostsData,
+  addPostData,
+  deletePostData,
+  updatePostData,
+};
