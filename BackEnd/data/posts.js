@@ -4,6 +4,7 @@ const {
   insertPostQuery,
   deletePostQuery,
   updatePostQuery,
+  verifyPostExistQuery,
 } = require('../querys/index.js');
 
 const getAllPostsData = async () => {
@@ -32,7 +33,6 @@ const deletePostData = async (id) => {
 };
 
 const updatePostData = async (id, titulo, img, descripcion, likes) => {
-  console.log(id, titulo, img, descripcion, likes);
   try {
     await pool.query(updatePostQuery, [titulo, img, descripcion, likes, id]);
     return 'Post con id ' + id + ' actualizado';
@@ -42,9 +42,15 @@ const updatePostData = async (id, titulo, img, descripcion, likes) => {
   }
 };
 
+const getPostData = async (id) => {
+  const { rows } = await pool.query(verifyPostExistQuery, [id]);
+  return rows;
+};
+
 module.exports = {
   getAllPostsData,
   addPostData,
   deletePostData,
   updatePostData,
+  getPostData,
 };

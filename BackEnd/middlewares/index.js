@@ -10,7 +10,7 @@ const validaIdPost = async (req, res, next) => {
       if (!post) {
         return res.status(404).json({
           status: 'Not Found',
-          message: 'El post no exist para el id ' + id,
+          message: 'El post no existe para el id ' + id,
         });
       } else {
         req.data = {

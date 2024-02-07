@@ -3,6 +3,7 @@ const {
   addPostData,
   deletePostData,
   updatePostData,
+  getPostData
 } = require('../data/posts.js');
 
 const getAllPosts = async (req, res) => {
@@ -35,12 +36,14 @@ const deletePost = async (req, res) => {
 
   try {
     if (postExist) {
-      const results = await deletePostData(id);
+      const postToDelete = await getPostData(id);
+      const query_delete = await deletePostData(id);
+      
       res.status(200).json({
-        status:"success",
-        message: "Post eliminado",
-        //post: results
-      })
+        status:"SUCCESS",
+        message: query_delete,
+        post: postToDelete
+      });
     }
   } catch (error) {
     next(error);
@@ -58,19 +61,20 @@ const updatePost = async (req, res, next) => {
       const img = req.body.url || post.img;
       const descripcion = req.body.descripcion || post.descripcion;
       const likes = req.body.likes || post.likes;
-
-      const results = await updatePostData(
+  
+      const update_query = await updatePostData(
         id,
         titulo,
         img,
         descripcion,
         likes + 1
       );
-      //const postUpdated  = results.rows[0];
+      
+      const postUpdated  = await getPostData(id);
       res.status(200).json({
-        status:"success",
-        message: "Post actualizado",
-        //post: postUpdated
+        status:"SUCCESS",
+        message: update_query,
+        post: postUpdated
       });
     }
   } catch (error) {
